@@ -1,0 +1,91 @@
+
+
+<!-- 侧边导航生成宏-->
+{% macro nav_link(endpoint, text,icon,hub,hubtext) %}
+{% if not hub %}
+    {% if request.endpoint.endswith(endpoint) %}
+        <li class="active">
+    {% else %}
+        <li class="">
+    {% endif %}
+    <a href="{{ url_for(endpoint) }} "
+       class="">
+        <i class="{{ icon }}  " style="font-size: 22px;">
+        </i>
+        <span class="menu-text"> {{ text }}
+        </span>
+    </a>
+{% else %}
+    {% if request.endpoint in hubtext %}
+    <li class="active  open">
+        {% else %}
+        <li class="">
+        {% endif %}
+        <a href="#" class="dropdown-toggle ">
+            <b class="arrow fa fa-angle-down"></b>
+            <i class="{{ icon }}" style="font-size: 22px;">
+            </i>
+            <span class="menu-text"> {{ text }}
+            </span>
+        </a>
+
+    <ul class="submenu ">
+        {% for point,hubt in hubtext.iteritems() %}
+            {% if request.endpoint.endswith(point|e) %}
+                <li class="active">
+                    {% else %}
+                <li class="">
+            {% endif %}
+        <a href="{{ url_for(point|e) }}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            {{ hubt|e }}
+        </a>
+        <b class="arrow"></b>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% endif %}
+</li>
+{% endmacro %}
+
+<!-- 错误提示宏  不使用了-->
+{% macro errorlist(errors) %}
+    {% for error in errors %}
+
+        <div class="alert alert-warning hidden-sm hidden-xs" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <i class="ace-icon fa fa-times">
+                    <span aria-hidden="true"></span>
+                </i>
+            </button>
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            {{ error }}
+        </div>
+
+    {% endfor %}
+{% endmacro %}
+
+<!-- 错误提示宏2-->
+{% macro error2list(errors) %}
+    {% for error in errors %}
+        <div>
+            <span class="light-red">
+        {{ error }}
+            </span>
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+
+
+<!-- 错误提示宏3-->
+{% macro error3list(errors) %}
+    {% for error in errors %}
+        <div style="margin-bottom:5px;padding: 5px"
+                     class="alert-warning hidden-sm hidden-xs fade in" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+         {{ error }}
+        </div>
+    {% endfor %}
+{% endmacro %}

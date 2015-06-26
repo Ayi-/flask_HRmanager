@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <title>人力资源管理系统</title>
+
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+
+
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css"/>
+
+    <!-- page specific plugin styles -->
+
+    <!-- text fonts -->
+    <link rel="stylesheet" href="/static/css/ace-fonts.css"/>
+
+    <!-- ace styles -->
+    <link rel="stylesheet" href="/static/css/ace.min.css" id="main-ace-style"/>
+
+    <!--[if lte IE 9]>
+			<link rel="stylesheet" href="/static/css/ace-part2.min.css" />
+		<![endif]-->
+    <link rel="stylesheet" href="/static/css/ace-skins.min.css"/>
+    <link rel="stylesheet" href="/static/css/ace-rtl.min.css"/>
+
+    <!--[if lte IE 9]>
+		  <link rel="stylesheet" href="/static/css/ace-ie.min.css" />
+		<![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!-- ace settings handler -->
+    <script src="/static/js/ace-extra.min.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+
+    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
+
+    <!--[if lte IE 8]>
+		<script src="/static/js/html5shiv.min.js"></script>
+		<script src="/static/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body class="no-skin">
+<!-- #section:basics/navbar.layout -->
+{% set ROLE_ADMIN = 0 %}
+{% set ROLE_USER =1 %}
+{% set ROLE_MANAGER = 2 %}
+<div style="position: fixed;bottom: 24px;display: block;z-index:10;">
+    {% block errorFalshPositionFixed %}{% endblock %}
+</div>
+
+<div id="navbar" class="navbar navbar-default">
+    <script type="text/javascript">
+        try {
+            ace.settings.check('navbar', 'fixed')
+        } catch (e) {
+        }
+    </script>
+
+    <div class="navbar-container" id="navbar-container">
+        <!-- #section:basics/sidebar.mobile.toggle -->
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+
+        <!-- /section:basics/sidebar.mobile.toggle -->
+        <div class="navbar-header pull-left">
+            <!-- #section:basics/navbar.layout.brand -->
+            <a href="#" class="navbar-brand">
+                <small>
+                    <i class="fa fa-leaf"></i>
+                    人力资源管理系统
+                </small>
+            </a>
+
+            <!-- /section:basics/navbar.layout.brand -->
+
+            <!-- #section:basics/navbar.toggle -->
+
+            <!-- /section:basics/navbar.toggle -->
+        </div>
+
+        <!-- #section:basics/navbar.dropdown -->
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <!-- #section:basics/navbar.user_menu -->
+                {% block User_nav %}
+                    <li class="light-blue">
+                        <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                            <img class="nav-user-photo" src="/static/avatars/user.jpg" alt="Jason's Photo"/>
+
+                            welcome,
+                            {{ g.worker.worker_name }}
+
+                            <i class="ace-icon fa fa-caret-down"></i>
+                        </a>
+
+                        <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                            <li>
+                                <a href="{{ url_for('profile') }}">
+                                    <i class="ace-icon fa fa-user"></i>
+                                    个人资料
+                                </a>
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li>
+                                <a href={{ url_for('logout') }}>
+                                    <i class="ace-icon fa fa-power-off"></i>
+                                    注销
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endblock User_nav %}
+                <!-- /section:basics/navbar.user_menu -->
+            </ul>
+        </div>
+
+        <!-- /section:basics/navbar.dropdown -->
+    </div>
+    <!-- /.navbar-container -->
+</div>
+
+<!-- /section:basics/navbar.layout -->
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.check('main-container', 'fixed')
+        } catch (e) {
+        }
+    </script>
+
+    <!-- #section:basics/sidebar -->
+    <div id="sidebar" class="sidebar                  responsive">
+        <script type="text/javascript">
+            try {
+                ace.settings.check('sidebar', 'fixed')
+            } catch (e) {
+            }
+        </script>
+
+        <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+            <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+
+
+                <a class="btn btn-warning" href="{{ url_for('searchdepart') }}" role="button">
+                    <i class="ace-icon fa fa-users white">
+                    </i>
+                </a>
+
+                <a class="btn btn-info" href="{{ url_for('profile') }}">
+                    <i class="ace-icon fa fa-pencil white"></i>
+                </a>
+                <!-- #section:basics/sidebar.layout.shortcuts -->
+
+
+                <!-- /section:basics/sidebar.layout.shortcuts -->
+            </div>
+
+            <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+                <span class="btn btn-success"></span>
+
+                <span class="btn btn-info"></span>
+
+                <span class="btn btn-warning"></span>
+
+                <span class="btn btn-danger"></span>
+            </div>
+        </div>
+        <!-- /.sidebar-shortcuts -->
+
+        {% block nav_list %}{% include "nav_list2.html" %} {% endblock %}
+        <!-- /.nav-list -->
+
+        <!-- #section:basics/sidebar.layout.minimize -->
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left"
+               data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+        {% block flash %}
+
+
+
+
+        {% endblock flash %}
+        <!-- /section:basics/sidebar.layout.minimize -->
+        <script type="text/javascript">
+            try {
+                ace.settings.check('sidebar', 'collapsed')
+            } catch (e) {
+            }
+        </script>
+    </div>
+
+    <!-- /section:basics/sidebar -->
+    <div class="main-content">
+        <!-- #section:basics/content.breadcrumbs -->
+        <div class="breadcrumbs" id="breadcrumbs">
+            <script type="text/javascript">
+                try {
+                    ace.settings.check('breadcrumbs', 'fixed')
+                } catch (e) {
+                }
+            </script>
+
+            <ul class="breadcrumb">
+                {% block breadcrumb %}
+                    <i class="ace-icon fa fa-home home-icon"></i>
+                    <li class="active ">
+                        主页
+                    </li>
+                {% endblock %}
+
+            </ul>
+            <!-- /.breadcrumb -->
+
+        </div>
+
+        <!-- /section:basics/content.breadcrumbs -->
+        <div class="page-content">
+            <!-- #section:settings.box -->
+            <div class="ace-settings-container" id="ace-settings-container">
+                <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+                    <i class="ace-icon fa fa-cog bigger-150"></i>
+                </div>
+
+                <div class="ace-settings-box clearfix" id="ace-settings-box">
+                    <div class="pull-left width-50">
+                        <!-- #section:settings.skins -->
+                        <div class="ace-settings-item">
+                            <div class="pull-left">
+                                <select id="skin-colorpicker" class="hide">
+                                    <option data-skin="no-skin" value="#438EB9">#438EB9</option>
+                                    <option data-skin="skin-1" value="#222A2D">#222A2D</option>
+                                    <option data-skin="skin-2" value="#C6487E">#C6487E</option>
+                                    <option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+                                </select>
+                            </div>
+                            <span>&nbsp; 更换皮肤</span>
+                        </div>
+
+                        <!-- /section:settings.skins -->
+
+                        <!-- #section:settings.container -->
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-add-container"/>
+                            <label class="lbl" for="ace-settings-add-container">
+                                缩小界面
+                            </label>
+                        </div>
+
+                        <!-- /section:settings.container -->
+                    </div>
+                    <!-- /.pull-left -->
+
+                    <div class="pull-left width-50">
+                        <!-- #section:basics/sidebar.options -->
+                        <div class="ace-settings-item ">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover"/>
+                            <label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact"/>
+                            <label class="lbl" for="ace-settings-compact"> 缩小侧边栏</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight"/>
+                            <label class="lbl" for="ace-settings-highlight"> 改变侧边栏箭头样式</label>
+                        </div>
+
+                        <!-- /section:basics/sidebar.options -->
+                    </div>
+                    <!-- /.pull-left -->
+                </div>
+                <!-- /.ace-settings-box -->
+            </div>
+            <!-- /.ace-settings-container -->
+
+            <!-- /section:settings.box -->
+            <div class="page-content-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+
+                        {% block content %}{% endblock %}
+                        <!-- PAGE CONTENT ENDS -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.page-content-area -->
+        </div>
+        <!-- /.page-content -->
+    </div>
+    <!-- /.main-content -->
+
+
+    <div class="footer">
+        <div class="footer-inner">
+            <!-- #section:basics/footer -->
+            <div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">人力资源管理系统</span>
+                            &copy; 2015
+						</span>
+
+                &nbsp; &nbsp;
+						<span class="action-buttons">
+							<a href="#">
+                                <i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+                            </a>
+
+							<a href="#">
+                                <i class="ace-icon fa fa-facebook-square text-primary bigger-150"></i>
+                            </a>
+
+						</span>
+            </div>
+
+            <!-- /section:basics/footer -->
+        </div>
+    </div>
+</div>
+
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+
+
+
+{% block ex %}
+{% endblock ex %}
+<!-- basic scripts -->
+{% block script %}
+    {% if g.user.limits|int == ROLE_ADMIN %}
+<script>
+
+    $('.modal').on('show.bs.modal', function (event) {
+
+        var button = $(event.relatedTarget);// Button that triggered the modal
+        var rows = $(button).parents('tr'); //get per row
+        // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modala = $(this);  // init modal
+        var j = 0;
+
+        if (del) {
+            //切换添加modal和更新modal
+            $('#sub').attr('value', 'add');
+            $('#alterModalLabel').text('{{ altertext }}添加界面');
+            $('#workerId').text('员工ID');
+            $('#inputId').removeAttr('readonly')
+        }
+        else{
+        $(rows).children('td').each(function () {
+            modala.find('input').eq(j).val($(this).text());
+            j += 1;
+        })}
+    });
+
+    $('.modal').on('hidden.bs.modal', function (event) {
+//切换添加modal和更新modal
+        var modala = $(this);
+        modala.find('input').val("");
+        if (del) {
+            del = false;
+            {% block modal_hidden_bs %}
+            {% endblock modal_hidden_bs %}
+            $('#sub').attr('value', 'alter');
+            $('#alterModalLabel').text('{{ altertext }}修改界面');
+            $('#workerId').text('员工姓名');
+            $('#inputId').attr('readonly','')
+        }
+
+    });
+
+    var del = false;
+</script>
+    {% endif %}
+{% endblock script %}
+
+<script>
+    $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+
+
+
+
+
+    //定时关闭alert
+    $("[role='alert']").fadeTo(5000, 500).slideUp(500, function () {
+
+        //$(this).alert('close');
+        $(this).remove("*");
+    });
+
+    // 经过就关闭
+    $("[role='alert']").hover(function(){
+        $(this).remove("*");
+    });
+
+</script>
+<!--[if !IE]> -->
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/static/js/jquery.min.js'>" + "<" + "/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='/static/js/jquery1x.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if ('ontouchstart' in document.documentElement) document.write("<script src='/static/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+</script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+<script src="/static/js/ace-elements.min.js"></script>
+<script src="/static/js/ace.min.js"></script>
+
+<!-- inline scripts related to this page -->
+
+<!-- the following scripts are used in demo only for onpage help and you don't need them -->
+<link rel="stylesheet" href="/static/css/ace.onpage-help.css" property=""/>
+<script src="/static/js/bootstrap.min.js"></script>
+
+<script type="text/javascript"> ace.vars['base'] = '..'; </script>
+<script src="/static/js/ace/elements.onpage-help.js"></script>
+<script src="/static/js/ace/ace.onpage-help.js"></script>
+
+</body>
+</html>

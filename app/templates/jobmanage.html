@@ -1,0 +1,256 @@
+{% extends "index.html" %}
+{% from "macro.html" import error3list with context %}
+{% block errorFalshPositionFixed %}
+    {% include 'flash_warning.html' %}
+    {{ error3list(fromJob.errors.job_name) }}
+    {{ error3list(fromJob.errors.job_salary) }}
+    {{ error3list(fromJob.errors.job_bonus) }}
+{% endblock errorFalshPositionFixed %}
+{% block breadcrumb %}
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="/index">
+            主页
+        </a>
+    </li>
+    <li>
+        <a href="/index">
+            管理
+        </a>
+    </li>
+    <li class="active">
+        考勤管理
+    </li>
+{% endblock %}
+{% block nav_list %}{% include "nav_list2.html" %}{% endblock %}
+{% block content %}
+    <div class="table-responsive table-container">
+        <table class="table  table-striped table-hover table-bordered  table-condensed">
+
+            <thead>
+            <tr>
+                <th>职务ID</th>
+                <th>职务名</th>
+                <th>基本工资</th>
+                <th>基本奖金</th>
+                <th>人数</th>
+                {% if g.user.limits|int == ROLE_ADMIN %}
+                <th>操作</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for List in Job.items %}
+                {% set td = List.get_list %}
+
+                <tr>
+                    <td>{{ td[0] }}</td>
+                    <td>{{ td[1] }}</td>
+                    <td>{{ td[2] }}</td>
+                    <td>{{ td[3] }}</td>
+                    <td>{{ td[4] }}</td>
+                    {% if g.user.limits|int == ROLE_ADMIN %}
+                    <td>
+                        <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#alterModal">
+                            <i class="ace-icon fa fa-pencil bigger-120"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger" data-toggle="modal"
+                            data-target="#deleteModal">
+                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                    </button>
+                    </td>
+                {% endif %}
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+    {% if g.user.limits|int == ROLE_ADMIN %}
+        <div class="ui-pg-button ui-corner-all col-md-1 col-md-offset-1 ">
+
+            <div class="ui-pg-div">
+
+                <i id="add" class="ui-icon ace-icon fa fa-plus-circle blue" data-whatever="asd" data-modal="#alterModal"
+                   data-toggle="tooltip" data-original-title='添加'>
+                </i>
+
+            </div>
+        </div>
+    {% endif %}
+        <div class="col-md-4 col-md-offset-2">
+            <table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table center">
+                <tbody>
+                <tr>
+                    <td id="first_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not Job.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  Job.has_prev %}href="{{ url_for('jobmanage') }}" {% endif %}role="button"
+                            class="ui-icon ace-icon fa fa-angle-double-left bigger-140 disabled "></a></td>
+                    <td id="prev_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not Job.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  Job.has_prev %}href="{{ url_for('jobmanage',page=Job.prev_num) }}" {% endif %}class="ui-icon ace-icon fa fa-angle-left bigger-140"></a>
+                    </td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td dir="ltr">Page <span id="sp_1_grid-pager">{{ page }}</span></td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td id="next_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not Job.has_next %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  Job.has_next %}href="{{ url_for('jobmanage',page=Job.next_num) }}" {% endif %}
+                            class="ui-icon ace-icon fa fa-angle-right bigger-140"></a></td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block ex %}
+{% if g.user.limits|int == ROLE_ADMIN %}
+
+    <form class="form-horizontal" method="POST" >
+        {{ fromJob.csrf_token }}
+        <div class="modal fade bs-example-modal-sm " id="alterModal" tabindex="-1" role="dialog"
+             aria-labelledby="alterModalLabel" aria-hidden="true">
+
+            <!-- #section:elements.form -->
+            <div class="modal-dialog modal-sm ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="alterModalLabel">
+                            修改界面
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                       职务ID
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        <input name="jobId" placeholder="ID由系统设定" readonly=""
+                                               type="text" class="form-control col-xs-10 col-md-10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-md-3 control-label no-padding-right">
+                                        职务名称
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ fromJob.job_name(placeholder="请输入职务名",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        基本工资
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ fromJob.job_salary(placeholder="请输入基本工资",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        基本奖金
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ fromJob.job_bonus(placeholder="请输入基本奖金",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- /.modal-row -->
+                        <div class="modal-footer ">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">关闭
+                            </button>
+                            <button id="sub" type="submit" class="btn btn-primary" name="submit" value="alter">
+                                提交更改<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </form>
+
+<form method="POST">
+    {{ fromJob.csrf_token }}
+    <div class="modal fade modal-md" id="deleteModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        删除
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                        <div class="row">
+                                <h2 class="text-center">是否删除</h2>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">职务ID
+                            </label>
+
+                            <div class="col-md-6">
+                                <input  name="jobId" readonly="" type="text" class="form-control col-xs-12 col-md-12">
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">职务名称
+                            </label>
+
+                            <div class="col-md-6">
+                                {{ fromJob.job_name(readonly="",type="text", class="form-control col-xs-12 col-md-12") }}
+                            </div>
+                        </div>
+
+                              </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="submit" name="submit" value="del" class="btn btn-primary">
+                        删除
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+{% endif %}
+{% endblock ex %}

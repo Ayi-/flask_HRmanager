@@ -1,0 +1,18 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category,message in messages %}
+            {% if category == 'message' %}
+                <div style="margin-bottom:5px;padding: 5px"
+                     class="alert-info hidden-sm hidden-xs fade in" role="alert">
+            {% else %}
+                <div style="margin-bottom:5px;padding: 5px"
+                     class="alert-{{ category }}  hidden-sm hidden-xs fade in" role="alert">
+            {% endif %}
+
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+        {{ message }}
+
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}

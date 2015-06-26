@@ -1,0 +1,8 @@
+{% from "macro.html" import nav_link with context %}
+
+<ul class="nav nav-list">
+            {{ nav_link('index', '主页','menu-icon fa fa-home') }}
+    {{ nav_link('/', '管理','menu-icon fa fa-list',True,{'searchdepart':'部门管理','searchworker':'员工管理',
+            'wagesmanage':'工资管理','appraisemanage':'考勤管理','jobmanage':'职务管理'}) }}
+            {{ nav_link('profile', '个人信息','menu-icon fa fa-user') }}
+</ul>

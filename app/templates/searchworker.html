@@ -1,0 +1,489 @@
+{% extends "index.html" %}
+{% from "macro.html" import error3list with context %}
+{% block errorFalshPositionFixed %}
+    {% include 'flash_warning.html' %}
+    {{ error3list(formWorker.errors.worker_name) }}
+    {{ error3list(formWorker.errors.worker_sex) }}
+    {{ error3list(formWorker.errors.worker_birthday) }}
+    {{ error3list(formWorker.errors.worker_age) }}
+    {{ error3list(formWorker.errors.worker_phone) }}
+    {{ error3list(formWorker.errors.worker_diploma) }}
+    {{ error3list(formWorker.errors.worker_email) }}
+    {{ error3list(formWorker.errors.worker_address) }}
+    {{ error3list(formWorker.errors.job_name) }}
+    {{ error3list(formWorker.errors.department_name) }}
+
+{% endblock errorFalshPositionFixed %}
+{% block breadcrumb %}
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="/index">
+            主页
+        </a>
+    </li>
+    <li>
+        <a href="/index">
+            管理
+        </a>
+    </li>
+    <li class="active">
+        员工管理
+    </li>
+{% endblock %}
+{% block nav_list %}{% include "nav_list2.html" %}{% endblock %}
+{% block content %}
+<div class="table-responsive table-container">
+    <table id="wor" style=" word-wrap: break-word; word-break: break-all;"  class="table  table-striped table-hover table-bordered  table-condensed ">
+
+        <thead>
+        <tr>
+            <th>员工ID</th>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>生日</th>
+            <th>联系方式</th>
+            <th>学历</th>
+            <th>电子邮箱</th>
+            <th >住址</th>
+            <th>就职时间</th>
+            <th>职务</th>
+            <th>部门</th>
+            {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+            <th>操作</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+         {% if searchFlag %}
+                {% set Wor=wor %}
+            {% else %}
+                {% set Wor=wor.items %}
+            {% endif %}
+        {% for w in Wor %}
+            {% set t = w.get_list %}
+
+            <tr>
+                <td style="width:40px;">{{ t[0] }}</td>
+                <td>{{ t[1] }}</td>
+                <td>{{ t[2] }}</td>
+                <td>{{ t[3] }}</td>
+                <td>{{ t[4] }}</td>
+                <td style="width:95px;">{{ t[5] }}</td>
+                <td>{{ t[6] }}</td>
+                <td>{{ t[7] }}</td>
+                <td style="width: 130px;">{{ t[8] }}</td>
+                <td >{{ t[9] }}</td>
+                <td>{{ t[10] }}</td>
+                {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+                <td>
+                    <button class="btn btn-xs btn-info" data-toggle="modal" data-target="#alterModal">
+                        <i class="ace-icon fa fa-pencil bigger-120"></i>
+                    </button>
+                    <button class="btn btn-xs btn-danger" data-toggle="modal"
+                            data-target="#deleteModal">
+                        <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                    </button>
+                </td>
+            {% endif %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    </div>
+
+    <div class="row">
+    {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+    <div class="ui-pg-button ui-corner-all col-md-1 col-md-offset-1 " >
+
+        <div class="ui-pg-div" >
+
+            <i id="add" class="ui-icon ace-icon fa fa-plus-circle blue" data-whatever="asd" data-modal="#alterModal" data-toggle="tooltip" data-original-title='添加'>
+            </i>
+            <i id="search" class="ui-icon ace-icon fa fa-search orange" data-toggle="tooltip" data-original-title='搜索'>
+            </i>
+        </div>
+    </div>
+    {% endif %}
+        <div class="col-md-4 col-md-offset-2">
+            <table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table center">
+                <tbody>
+                <tr>
+                    <td id="first_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not wor.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  wor.has_prev %}href="{{ url_for('searchworker') }}" {% endif %}role="button"
+                            class="ui-icon ace-icon fa fa-angle-double-left bigger-140 disabled "></a></td>
+                    <td id="prev_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not wor.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  wor.has_prev %}href="{{ url_for('searchworker',page=wor.prev_num) }}" {% endif %}class="ui-icon ace-icon fa fa-angle-left bigger-140"></a>
+                    </td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td dir="ltr">Page <span id="sp_1_grid-pager">{{ page }}</span></td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td id="next_grid-pager"
+                        class="ui-pg-button ui-corner-all {% if not wor.has_next %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a
+                            {% if  wor.has_next %}href="{{ url_for('searchworker',page=wor.next_num) }}" {% endif %}
+                            class="ui-icon ace-icon fa fa-angle-right bigger-140"></a></td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block ex %}
+{% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+
+<form class="form-horizontal" method="POST" name="formWorker">
+                            {{ formWorker.csrf_token }}
+        <div class="modal fade bs-example-modal-md " id="alterModal" tabindex="-1" role="dialog"
+             aria-labelledby="alterModalLabel" aria-hidden="true">
+
+            <!-- #section:elements.form -->
+            <div class="modal-dialog modal-md ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="alterModalLabel">
+                            修改界面
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right">
+                                员工ID
+                            </label>
+
+                            <div class="col-md-9">
+                                <input id="inputId" name="worker_id" placeholder="ID由系统设定" readonly="" type="text" class="form-control col-xs-10 col-md-10">
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                姓名
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_name(placeholder="请输入姓名",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                性别
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_sex(placeholder="请输入性别(男或女)",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                生日
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_birthday(placeholder="请输入生日(1990-01-01)",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                                <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                联系方式
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_phone(placeholder="请输入手机号码",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                                </div>
+                            <div class="col-xs-6 col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                学历
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_diploma(placeholder="请输入学历",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                电子邮箱
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_email(placeholder="请输入电子邮箱",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                住址
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.worker_address(placeholder="请输入目前住址",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right">
+                                就职时间
+                            </label>
+
+                            <div class="col-md-9">
+                                <input id="inputData" placeholder="系统自动设定" readonly="" type="text" class="form-control col-xs-10 col-md-10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                职务
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.job_name(placeholder="请输入职务名称或者无",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                部门
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formWorker.department_name(placeholder="请输入部门名称或者无",class="form-control col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+
+</div>
+                                </div>
+                        <!-- /.modal-row -->
+                        <div class="modal-footer ">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">关闭
+                            </button>
+                            <button id="sub" type="submit" class="btn btn-primary" name="submit" value="alter">
+                                提交更改<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+  </form>
+
+
+<form method="POST" name="formDelwor">
+    {{ formDelwor.csrf_token }}
+    <div class="modal fade modal-md" id="deleteModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        删除
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                        <div class="row">
+                                <h2 class="text-center">是否删除</h2>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">员工ID
+                            </label>
+
+                            <div class="col-md-6">
+                                <input  name="id" readonly="" type="text" class="form-control col-xs-12 col-md-12">
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">员工姓名
+                            </label>
+
+                            <div class="col-md-6">
+                                {{ formDelwor.name(readonly="",type="text", class="form-control col-xs-12 col-md-12") }}
+                            </div>
+                        </div>
+
+                              </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="submit" name="submit" value="delete" class="btn btn-primary">
+                        删除
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form><form method="POST">
+    {{ searchForm.csrf_token }}
+    <div class="modal fade modal-md" id="searchModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        搜索
+                    </h4>
+                </div>
+                <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="col-md-5 control-label ">搜索方式：
+                                </label>
+
+                                <div class="col-md-6">
+                                    {{ searchForm.select }}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div id="2" class="col-md-6 col-md-offset-4">
+                                    {{ searchForm.data(placeholder="请输入内容",class="form-control col-xs-12 col-md-12") }}
+                                </div>
+                                <div id="3" class="hidden">
+                                <div class="col-md-5">
+                                    {{ searchForm.startDate(placeholder="开始日期",class="form-control col-xs-10 col-md-10 ") }}
+                                </div>
+                                <div class="col-md-5">
+                                    {{ searchForm.endDate(placeholder="截止日期",class="form-control col-xs-10 col-md-10 ") }}
+                                </div>
+                                </div>
+
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">取消
+                    </button>
+                    <button type="submit" name="submit" value="search" class="btn btn-primary">
+                        搜索
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+    {% endif %}
+{% endblock ex %}
+{% block script %}
+    {% if g.user.limits|int == ROLE_ADMIN %}
+<script>
+        $('.modal').on('show.bs.modal', function (event) {
+
+        var button = $(event.relatedTarget);// Button that triggered the modal
+        var rows = $(button).parents('tr'); //get per row
+        // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modala = $(this);  // init modal
+        var j = 0;
+
+        if (del) {
+            //切换添加modal和更新modal
+
+
+            $('#sub').attr('value', 'add');
+            $("[id='1']").addClass('hidden');
+            $('#inputWorker').removeAttr('readonly');
+            $('#inputAppraise').removeAttr('readonly');
+            $('#alterModalLabel').text('{{ altertext }}添加界面');
+            $('#workerId').text('员工ID');
+            $('#inputId').removeAttr('readonly')
+        }
+        else{
+        $(rows).children('td').each(function () {
+            modala.find('input').eq(j).val($(this).text());
+            j += 1;
+        })}
+    });
+
+    $('.modal').on('hidden.bs.modal', function (event) {
+//切换添加modal和更新modal
+        var modala = $(this);
+        modala.find('input').val("");
+        if (del) {
+            del = false;
+            $("[id='1']").removeClass('hidden');
+            $('#inputWorker').attr('readonly','');
+            $('#inputAppraise').attr('readonly','');
+            $('#sub').attr('value', 'alter');
+            $('#alterModalLabel').text('{{ altertext }}修改界面');
+            $('#workerId').text('员工姓名');
+            $('#inputId').attr('readonly','')
+        }
+
+    });
+
+    var del = false;
+</script>
+    {% endif %}
+
+    <script>
+    $(document).ready(function () {
+        $("#add").click(function () {
+            del = true;
+            $("#alterModal").modal('toggle');
+        });
+    });
+    $(document).ready(function () {
+        $("#search").click(function () {
+
+            $("#searchModal").modal('toggle');
+        });
+    });
+
+    $("#select").change(function(){
+
+        var checkValue=$("#select").val();
+        if(checkValue== 5)
+        {
+            $("[id='2']").addClass('hidden');
+            $("[id='3']").removeClass('hidden');
+        }
+        else
+        {
+            $("[id='3']").addClass('hidden');
+            $("[id='2']").removeClass('hidden');
+        }
+    });
+
+    </script>
+{% endblock script %}

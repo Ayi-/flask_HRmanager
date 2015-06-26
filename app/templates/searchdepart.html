@@ -1,0 +1,242 @@
+{% extends "index.html" %}
+{% from "macro.html" import error3list with context %}
+{% block errorFalshPositionFixed %}
+    {% include 'flash_warning.html' %}
+    {{ error3list(formD.errors.department_name) }}
+    {{ error3list(formD.errors.department_password) }}
+
+
+{% endblock errorFalshPositionFixed %}
+{% block breadcrumb %}
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="/index">
+            主页
+        </a>
+    </li>
+    <li>
+        <a href="/index">
+            管理
+        </a>
+    </li>
+    <li class="active">
+        部门管理
+    </li>
+{% endblock %}
+{% block nav_list %}{% include "nav_list2.html" %}{% endblock %}
+{% block content %}
+    <table id="dep" class="table  table-striped table-hover table-bordered table-condensed">
+        <thead>
+        <tr>
+            <th>部门ID</th>
+            <th>部门名称</th>
+            <th>部门人数</th>
+            {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+            <th>部门密码</th>
+
+            <th>操作</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in dep.items %}
+
+            {% set t = i.get_list %}
+
+            <tr>
+                <td>{{ t[0] }}</td>
+                <td>{{ t[1] }}</td>
+                <td>{{ t[2] }}</td>
+                {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+                <td>{{ t[3] }}</td>
+
+                <td>
+
+                        <button id="{{ t[0] }}" class="btn btn-xs btn-info" data-toggle="modal" data-target="#alterModal">
+                            <i class="ace-icon fa fa-pencil bigger-120"></i>
+                        </button>
+                        <button id="{{ t[0] }}" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#deleteModal">
+                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                        </button>
+
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+    <div class="row">
+    {% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+    <div class="ui-pg-button ui-corner-all col-md-1 col-md-offset-1 " >
+
+        <div class="ui-pg-div" >
+
+            <i id="add" class="ui-icon ace-icon fa fa-plus-circle blue" data-whatever="asd" data-modal="#alterModal" data-toggle="tooltip" data-original-title='添加'>
+            </i>
+
+        </div>
+    </div>
+        {% endif %}
+    <div class="col-md-4 col-md-offset-2">
+            <table cellspacing="0" cellpadding="0" border="0" style="table-layout:auto;" class="ui-pg-table center">
+                <tbody>
+                <tr>
+
+
+                    <td id="first_grid-pager" class="ui-pg-button ui-corner-all {% if not dep.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a  {% if  dep.has_prev %}href="{{ url_for('searchdepart')}}" {% endif %}role="button"
+                            class="ui-icon ace-icon fa fa-angle-double-left bigger-140 disabled " ></a></td>
+                    <td id="prev_grid-pager" class="ui-pg-button ui-corner-all {% if not dep.has_prev %}ui-state-disabled{% endif %}"
+                        style="cursor: default;"><a {% if  dep.has_prev %}href="{{ url_for('searchdepart',page=dep.prev_num)}}" {% endif %}class="ui-icon ace-icon fa fa-angle-left bigger-140"></a></td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td dir="ltr">Page <span id="sp_1_grid-pager">{{ page }}</span></td>
+                    <td class="ui-pg-button ui-state-disabled" style="width: 4px; cursor: default;"><span
+                            class="ui-separator"></span></td>
+                    <td id="next_grid-pager" class="ui-pg-button ui-corner-all {% if not dep.has_next %}ui-state-disabled{% endif %}" style="cursor: default;"><a {% if  dep.has_next %}href="{{ url_for('searchdepart',page=dep.next_num)}}" {% endif %}
+                            class="ui-icon ace-icon fa fa-angle-right bigger-140"></a></td>
+
+                </tr>
+                </tbody>
+            </table>
+</div></div>
+{% endblock %}
+{% block ex %}
+{% if g.user.limits|int == ROLE_ADMIN or g.user.limits|int == ROLE_MANAGER %}
+
+
+    <form class="form-horizontal" method="POST" name="formD">
+    {{ formD.csrf_token }}
+        <div class="modal fade bs-example-modal-sm " id="alterModal" tabindex="-1" role="dialog"
+             aria-labelledby="alterModalLabel" aria-hidden="true">
+
+            <!-- #section:elements.form -->
+            <div class="modal-dialog modal-sm ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="alterModalLabel">
+                            修改界面
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right">
+                                部门ID
+                            </label>
+
+                            <div class="col-md-9">
+                                <input name="id" placeholder="系统指定" readonly="" type="text" class="col-xs-10 col-md-10">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right">
+                                部门名称
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formD.department_name(placeholder="请输入部门名称",class="col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right" >
+                                部门人数
+                            </label>
+
+                            <div class="col-md-9">
+                                <input  readonly="" placeholder="后台处理" type="text" class="col-xs-10 col-md-10">
+                            </div>
+                        </div>
+<div class="form-group">
+                            <label class="col-md-3 control-label no-padding-right">
+                                部门密码
+                            </label>
+
+                            <div class="col-md-9">
+                                {{ formD.department_password(placeholder="请输入部门密码",class="col-xs-10 col-md-10") }}
+                            </div>
+                        </div>
+                        <div class="modal-footer ">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" id="sub" class="btn btn-primary" name="submit" value="alter">
+                                提交更改<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </form>
+
+
+<form method="POST" name="formDel">
+    {{ formDel.csrf_token }}
+    <div class="modal fade modal-md" id="deleteModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        删除
+                    </h4>
+                </div>
+                <div class="modal-body">
+                        <div class="row">
+                                <h2 class="text-center">是否删除</h2>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">部门ID
+                            </label>
+
+                            <div class="col-md-6">
+                                <input  name="id" readonly="" type="text" class="form-control col-xs-12 col-md-12">
+                            </div>
+                        </div>
+                    <div class="form-group">
+                            <label class="col-md-5 control-label ">部门名称
+                            </label>
+
+                            <div class="col-md-6">
+
+                                {{ formDel.name(readonly="",type="text", class="form-control col-xs-12 col-md-12") }}
+                            </div>
+                        </div>
+
+                              </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="submit" name="submit" value="delete" class="btn btn-primary">
+                        删除
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+
+{% endif %}
+{% endblock ex %}

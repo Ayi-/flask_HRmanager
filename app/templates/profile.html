@@ -1,0 +1,305 @@
+{% extends "index.html" %}
+{% from "macro.html" import error3list with context %}
+{% block errorFalshPositionFixed %}
+    {% include 'flash_warning.html' %}
+    {{ error3list(formWorker.errors.worker_name) }}
+    {{ error3list(formWorker.errors.worker_sex) }}
+    {{ error3list(formWorker.errors.worker_birthday) }}
+    {{ error3list(formWorker.errors.worker_age) }}
+    {{ error3list(formWorker.errors.worker_phone) }}
+    {{ error3list(formWorker.errors.worker_diploma) }}
+    {{ error3list(formWorker.errors.worker_email) }}
+    {{ error3list(formWorker.errors.worker_address) }}
+    {{ error3list(formWorker.errors.job_name) }}
+    {{ error3list(formWorker.errors.department_name) }}
+
+{% endblock errorFalshPositionFixed %}
+{% block breadcrumb %}
+    <li>
+        <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="index">
+            主页
+        </a>
+    </li>
+
+
+    <li class="active">
+        个人资料
+    </li>
+{% endblock %}
+
+{% block nav_list %}{% include "nav_list2.html" %}{% endblock %}
+{% block content %}
+    <div class="clearfix">
+    </div>
+    <div id="user-profile-1" class="user-profile row">
+
+        <div class="col-xs-12 col-sm-3 ">
+            <div class="space-12"></div>
+            <div>
+                <!-- #section:pages/profile.picture -->
+                <span class="profile-picture">
+                    <img id="avatar"
+                         class="editable img-responsive editable-click editable-empty"
+                         alt="Alex's Avatar" src="../static/avatars/profile-pic.jpg"
+                         style="display: block;">
+
+                    </img>
+                </span>
+
+                <!-- /section:pages/profile.picture -->
+                <div class="space-4"></div>
+
+                <div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+                    <div class="inline position-relative">
+                        <a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+                            <i class="ace-icon fa fa-circle light-green"></i>
+                            &nbsp;
+                            <span class="white">{{ g.worker.worker_name }}</span>
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-6"></div>
+
+            <!-- #section:pages/profile.contact -->
+
+        </div>
+
+        <div class="col-xs-12 col-sm-9">
+
+
+            <div class="space-12"></div>
+
+            <!-- #section:pages/profile.info -->
+            <div class="profile-user-info profile-user-info-striped">
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 员工ID</div>
+
+                    <div class="profile-info-value">{{ g.worker.worker_id}}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 姓名</div>
+
+                    <div class="profile-info-value">{{ g.worker.worker_name }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> 性别</div>
+
+                    <div class="profile-info-value">{{ g.worker.worker_sex }}</div>
+                </div>
+
+
+                <div class="profile-info-row">
+                    <div class="profile-info-name">生日</div>
+                    <div class="profile-info-value">{{ g.worker.worker_birthday }}</div>
+
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">联系方式</div>
+                    <div class="profile-info-value">{{ g.worker.worker_phone }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">学历</div>
+                    <div class="profile-info-value">{{ g.worker.worker_diploma }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">邮箱</div>
+                    <div class="profile-info-value">{{ g.worker.worker_email }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">地址</div>
+
+                    <div class="profile-info-value">{{ g.worker.worker_address }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">就职时间</div>
+                    <div class="profile-info-value">{{ g.worker.starting_date }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">职务</div>
+                    <div class="profile-info-value">{{ g.worker.job.job_name }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <div class="profile-info-name">部门</div>
+                    <div class="profile-info-value">{{ g.worker.department.department_name }}</div>
+                </div>
+                <div class="profile-info-row">
+                    <button class="btn btn-xs btn-info" data-toggle="modal"
+                        data-target="#alterModal">
+                        <i class="ace-icon fa fa-pencil bigger-120">修改信息</i>
+                    </button>
+                </div>
+   </div>
+            <!-- /section:pages/profile.info -->
+        </div>
+
+    </div>
+
+    <form class="form-horizontal" method="POST">
+        {{ formWorker.csrf_token }}
+        <div class="modal fade bs-example-modal-md " id="alterModal" tabindex="-1" role="dialog"
+             aria-labelledby="alterModalLabel" aria-hidden="true">
+
+            <!-- #section:elements.form -->
+            <div class="modal-dialog modal-md ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">×
+                        </button>
+                        <h4 class="modal-title" id="alterModalLabel">
+                            修改界面
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-xs-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        员工ID
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        <input id="inputId" name="worker_id" placeholder="ID由系统设定" readonly=""
+                                               type="text" class="form-control col-xs-10 col-md-10">
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        姓名
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_name(placeholder="请输入姓名",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        性别
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_sex(placeholder="请输入性别(男或女)",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        生日
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_birthday(placeholder="请输入生日(1990-01-01)",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        联系方式
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_phone(placeholder="请输入手机号码",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        学历
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_diploma(placeholder="请输入学历",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        电子邮箱
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_email(placeholder="请输入电子邮箱",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        住址
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.worker_address(placeholder="请输入目前住址",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        就职时间
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        <input id="inputData" placeholder="系统自动设定" readonly="" type="text"
+                                               class="form-control col-xs-10 col-md-10">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        职务
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.job_name(readonly='',placeholder="请输入职务名称或者无",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label no-padding-right">
+                                        部门
+                                    </label>
+
+                                    <div class="col-md-9">
+                                        {{ formWorker.department_name(readonly='',placeholder="请输入部门名称或者无",class="form-control col-xs-10 col-md-10") }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- /.modal-row -->
+                        <div class="modal-footer ">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">关闭
+                            </button>
+                            <button id="sub" type="submit" class="btn btn-primary" name="submit" value="alter">
+                                提交更改<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-body -->
+                </div>
+                <!-- /.modal-content -->
+            </div>
+
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+    </form>
+{% endblock %}
+{% block modal %}
+    <script>
+        $('.modal').on('show.bs.modal', function (event) {
+            // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modala = $(this);  // init modal
+            var j = 0;
+            $(".profile-info-value").each(function () {
+                modala.find('input').eq(j).val($(this).text());
+                j += 1;
+            })
+        });
+    </script>
+{% endblock modal %}

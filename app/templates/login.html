@@ -1,0 +1,429 @@
+<!DOCTYPE html>{% from "macro.html" import error2list with context %}
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <title>登陆 - 人力资源管理系统</title>
+
+    <meta name="description" content="User login page"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+    <!-- bootstrap & fontawesome -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css"/>
+
+    <!-- text fonts -->
+    <link rel="stylesheet" href="../static/css/ace-fonts.css"/>
+
+    <!-- ace styles -->
+    <link rel="stylesheet" href="../static/css/ace.min.css"/>
+
+    <!--[if lte IE 9]>
+			<link rel="stylesheet" href="../static/css/ace-part2.min.css" />
+		<![endif]-->
+    <link rel="stylesheet" href="../static/css/ace-rtl.min.css"/>
+
+    <!--[if lte IE 9]>
+		  <link rel="stylesheet" href="../static/css/ace-ie.min.css" />
+		<![endif]-->
+    <link rel="stylesheet" href="../static/css/ace.onpage-help.css"/>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <!--[if lt IE 9]>
+		<script src="../static/js/html5shiv.js"></script>
+		<script src="../static/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body class="login-layout">
+<div class="main-container">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="login-container">
+                    <div class="center">
+                        <h1>
+                            <i class="ace-icon fa fa-leaf green"></i>
+                            <span class="red">人力资源管理系统</span>
+                            <span class="white" id="id-text2"></span>
+                        </h1>
+                        <h4 class="blue" id="id-company-text">&copy; </h4>
+                    </div>
+
+                    <div class="space-6"></div>
+
+                    <div class="position-relative">
+                        <div id="login-box" class="login-box {{ visibleL }} widget-box no-border">
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <h4 class="header blue lighter bigger">
+                                        <i class="ace-icon fa fa-coffee green"></i>
+                                        登陆
+                                    </h4>
+
+                                    <div class="space-6"></div>
+
+
+
+
+                                    {% include "flash.html" %}
+                                    <form class="form-horizontal" method="POST" name="formL-form">
+
+                                        <fieldset>
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															{{ formL.userName(class="form-control",placeholder="用户名") }}
+															<!-- input type="text" class="form-control" placeholder="Username" /-->
+															<i class="ace-icon fa fa-user"></i>
+														</span>
+                                                {{ error2list(formL.errors.userName) }}
+                                            </label>
+
+                                            <label class="block clper view - Librelistearfix">
+														<span class="block input-icon input-icon-right">
+															{{ formL.Password(class="form-control",placeholder="密码") }}
+															<!--input type="password" class="form-control" placeholder="Password" /-->
+															<i class="ace-icon fa fa-lock"></i>
+														</span>
+                                                {{ error2list(formL.errors.Password) }}
+                                            </label>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <span class="block input-icon input-icon-left">
+                                                    {{ formL.codes(class="form-control",placeholder="请输入验证码") }}
+                                                        </span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <img src="/code" onclick="this.src=this.src+'?'" class="img-responsive" alt="Responsive image" style="cursor : pointer;">
+
+                                                </div>
+                                            </div>
+                                                <label class="row block clearfix">
+                                                    <div class="col-md-6 ">
+                                                        {{ error2list(formL.errors.codes) }}
+                                                    </div>
+                                                </label>
+                                            <div class="space-6"></div>
+                                            <div class="clearfix row">
+                                                <label class="col-md-6 inline">
+                                                    {{ formL.remember_me(class ="ace") }}
+                                                    <span class="lbl"> 记住我</span>
+                                                </label>
+
+                                                <button type="submit" class="width-35 pull-right btn btn-sm btn-primary"
+                                                        name="submit" value="login">
+                                                    <i class="ace-icon fa fa-key"></i>
+                                                    <span class="bigger-110">登陆</span>
+                                                </button>
+                                            </div>
+
+
+                                            {{ formL.csrf_token }}
+                                        </fieldset>
+                                    </form>
+
+
+
+
+
+                                </div>
+                                <!-- /.widget-main -->
+
+                                <div class="toolbar clearfix">
+                                    <div>
+                                        <a href="#" data-target="#forgot-box" class="forgot-password-link">
+                                            <i class="ace-icon fa fa-arrow-left"></i>
+                                            忘记密码
+                                        </a>
+                                    </div>
+
+                                    <div>
+                                        <a href="#" data-target="#signup-box" class="user-signup-link">
+                                            注册新帐号
+                                            <i class="ace-icon fa fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.login-box -->
+
+                        <div id="forgot-box" class="forgot-box widget-box no-border">
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <h4 class="header red lighter bigger">
+                                        <i class="ace-icon fa fa-key"></i>
+                                        重置密码
+                                    </h4>
+
+                                    <div class="space-6"></div>
+                                    <p>
+                                        请输入注册邮箱
+                                    </p>
+
+                                    <form>
+                                        <fieldset>
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="email" class="form-control"
+                                                                   placeholder="Email"/>
+															<i class="ace-icon fa fa-envelope"></i>
+														</span>
+                                            </label>
+
+                                            <div class="clearfix">
+                                                <button type="button" class="width-35 pull-right btn btn-sm btn-danger">
+                                                    <i class="ace-icon fa fa-lightbulb-o"></i>
+                                                    <span class="bigger-110">发送!</span>
+                                                </button>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+                                <!-- /.widget-main -->
+
+                                <div class="toolbar center">
+                                    <a href="#" data-target="#login-box" class="back-to-login-link">
+                                        返回登陆界面
+                                        <i class="ace-icon fa fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.forgot-box -->
+
+                        <div id="signup-box" class="signup-box {{ visibleR }} widget-box no-border ">
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <h4 class="header green lighter bigger">
+                                        <i class="ace-icon fa fa-users blue"></i>
+                                        新用户注册
+                                    </h4>
+
+
+                                    <p class="green"> 请输入您的信息: </p>
+<div class="space-6"></div>
+
+
+
+
+
+
+
+
+                                    <form class="form-horizontal" method="POST" name="formR">
+                                        <fieldset>
+
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                            {{ formR.userName(class="form-control",placeholder="用户名") }}
+															<i class="ace-icon fa fa-user"></i>
+														</span>
+                                                {{ error2list(formR.errors.userName) }}
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                            {{ formR.Password(class="form-control",placeholder="密码") }}
+															<i class="ace-icon fa fa-lock"></i>
+														</span>
+                                                {{ error2list(formR.errors.Password) }}
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															{{ formR.rPassword(class="form-control",placeholder="重复您的密码") }}
+															<i class="ace-icon fa fa-retweet"></i>
+														</span>
+                                                {{ error2list(formR.errors.rPassword) }}
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                            {{ formR.email(class="form-control",placeholder="邮箱：example@example.com") }}
+															<i class="ace-icon fa fa-envelope "></i>
+														</span>
+                                                {{ error2list(formR.errors.email) }}
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                            {{ formR.workid(class="form-control",placeholder="请输入您的工号") }}
+															<i class="ace-icon fa fa-leaf"></i>
+														</span>
+                                                {{ error2list(formR.errors.workid) }}
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                             选择部门：{{ formR.depart_name }}
+															<i class="ace-icon fa fa-align-left"></i>
+														</span>
+                                                {{ error2list(formR.errors.depart_name) }}
+                                            </label>
+
+                                            <label class="block clearfix" data-toggle="collapse"
+                                                   data-target="#manegepa">
+
+														<span class="block input-icon input-icon-right">
+
+															{{ formR.manageflag(class ="ace") }}
+															<span class="lbl"> 是否申请部门经理帐号</span>
+															<i class="ace-icon fa fa-align-center"></i>
+														</span>
+                                            </label>
+
+                                            <div id="manegepa"
+                                                 class="collapse {% if formR.manageflag.data==True %} in {% else %}out {% endif %}">
+                                                <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+                                                            {{ formR.manegepa(class="form-control",placeholder="请输入部门管理帐号申请密码") }}
+															<i class="ace-icon fa fa-align-right"></i>
+														</span>
+                                                    {{ error2list(formR.errors.manegepa) }}
+                                                </label>
+
+                                            </div>
+
+
+                                        <label>
+                                            <div class="row block clearfix">
+                                                <div class="col-md-6 ">
+                                                    <span class="block input-icon input-icon-left">{{ formR.codes(class="form-control",placeholder="请输入验证码") }}
+                                                     </span>
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                    <img src="/code" onclick="this.src=this.src+'?'" class="img-responsive" alt="点击刷新验证码" style="cursor : pointer;">
+                                                </div>
+                                            </div>
+                                            <div class="row block clearfix">
+                                                    <span class="col-md-6 ">
+
+                                                        {{ error2list(formR.errors.codes) }}
+
+                                                    </span>
+                                                </div>
+                                        </label>
+
+                                            <div class="clearfix">
+                                                <button type="reset" class="width-30 pull-left btn btn-sm">
+                                                    <i class="ace-icon fa fa-refresh"></i>
+                                                    <span class="bigger-110">重置</span>
+                                                </button>
+
+                                                <button type="submit" class="width-65 pull-right btn btn-sm btn-success"
+                                                        name="submit" value="register">
+                                                    <span class="bigger-110">注册！</span>
+{{ formR.csrf_token }}
+                                                    <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+                                                </button>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+                                </div>
+
+                                <div class="toolbar center">
+                                    <a href="#" data-target="#login-box" class="back-to-login-link">
+                                        <i class="ace-icon fa fa-arrow-left"></i>
+                                        返回登陆界面
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /.widget-body -->
+                        </div>
+                        <!-- /.signup-box -->
+                    </div>
+                    <!-- /.position-relative -->
+
+                    <div class="navbar-fixed-top align-right">
+                        <br/>
+                        &nbsp;
+                        <a id="btn-login-dark" href="#">Dark</a>
+                        &nbsp;
+                        <span class="blue">/</span>
+                        &nbsp;
+                        <a id="btn-login-blur" href="#">Blur</a>
+                        &nbsp;
+                        <span class="blue">/</span>
+                        &nbsp;
+                        <a id="btn-login-light" href="#">Light</a>
+                        &nbsp; &nbsp; &nbsp;
+                    </div>
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.main-content -->
+</div>
+<!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='../static/js/jquery.min.js'>" + "<" + "/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='../static/js/jquery1x.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+<script type="text/javascript">
+    if ('ontouchstart' in document.documentElement) document.write("<script src='../static/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+</script>
+
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+    jQuery(function ($) {
+        $(document).on('click', '.toolbar a[data-target]', function (e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $('.widget-box.visible').removeClass('visible');//hide others
+            $(target).addClass('visible');//show target
+        });
+    });
+
+
+    //you don't need this, just used for changing background
+    jQuery(function ($) {
+        $('#btn-login-dark').on('click', function (e) {
+            $('body').attr('class', 'login-layout');
+            $('#id-text2').attr('class', 'white');
+            $('#id-company-text').attr('class', 'blue');
+
+            e.preventDefault();
+        });
+        $('#btn-login-light').on('click', function (e) {
+            $('body').attr('class', 'login-layout light-login');
+            $('#id-text2').attr('class', 'grey');
+            $('#id-company-text').attr('class', 'blue');
+
+            e.preventDefault();
+        });
+        $('#btn-login-blur').on('click', function (e) {
+            $('body').attr('class', 'login-layout blur-login');
+            $('#id-text2').attr('class', 'white');
+            $('#id-company-text').attr('class', 'light-blue');
+
+            e.preventDefault();
+        });
+
+    });
+</script>
+<!-- 警告窗口关闭需要 -->
+<script src="../static/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
